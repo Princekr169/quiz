@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .quiz-container {
+            width: 50%;
+            margin: auto;
+            text-align: center;
+        }
+        .question {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 5px 0;
+        }
+        .timer {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .result {
+            font-size: 22px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div id="quiz"></div>
+        <div class="timer" id="timer">Time left: <span id="time">20:00</span></div>
+        <button onclick="prevQuestion()">Previous</button>
+        <button onclick="nextQuestion()">Next</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Question 1?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 0 },
+            { question: "Question 2?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 1 },
+            { question: "Question 3?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 2 },
+            { question: "Question 4?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 3 },
+            { question: "Question 5?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 0 },
+            { question: "Question 6?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 1 },
+            { question: "Question 7?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 2 },
+            { question: "Question 8?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 3 },
+            { question: "Question 9?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 0 },
+            { question: "Question 10?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 1 },
+            { question: "Question 11?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 2 },
+            { question: "Question 12?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 3 },
+            { question: "Question 13?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 0 },
+            { question: "Question 14?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 1 },
+            { question: "Question 15?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 2 },
+            { question: "Question 16?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 3 },
+            { question: "Question 17?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 0 },
+            { question: "Question 18?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 1 },
+            { question: "Question 19?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 2 },
+            { question: "Question 20?", options: ["Option 1", "Option 2", "Option 3", "Option 4"], answer: 3 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 1200; // 20 minutes in seconds
+
+        function loadQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById('quiz').innerHTML = `
+                    <div class="question">${questions[currentQuestion].question}</div>
+                    <ul class="options">
+                        ${questions[currentQuestion].options.map((option, index) => `
+                            <li><input type="radio" name="option" value="${index}"> ${option}</li>
+                        `).join('')}
+                    </ul>
+                `;
+            } else {
+                showResult();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            document.getElementById('time').textContent = formatTime(timeLeft);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showResult();
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (selectedOption && parseInt(selectedOption.value) === questions[currentQuestion].answer) {
+                score++;
+            }
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz').innerHTML = '';
+            document.getElementById('timer').style.display = 'none';
+            let resultHTML = `You scored ${score} out of ${questions.length}<br><br>`;
+            questions.forEach((q, index) => {
+                resultHTML += `Q${index + 1}: ${q.question}<br>Correct Answer: ${q.options[q.answer]}<br><br>`;
+            });
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+
+        loadQuestion();
+        startTimer();
+    </script>
+</body>
+</html>
